@@ -29,15 +29,20 @@ public class Mob : MonoBehaviour
     public float maturationTemps = 1;
     [Range(0,1)]
     public float cycleReproduction = 0.5f;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [Range(0, 1)]
+    public float poids;
 
-    // Update is called once per frame
-    void Update()
+    public Torso torso;
+
+    public void ComputeStats()
     {
-        
+        sexe = (Sexe) Random.Range(0, 2);
+        alimentation = torso.GetAlimentation();
+        force = torso.GetForce();
+        vitesse = torso.GetVitesse();
+        satiete = torso.GetSatiete();
+        maturationTemps = torso.GetMaturationTemps();
+        cycleReproduction = torso.GetCycleReproduction();
+        poids = torso.GetPoids();
     }
 }
