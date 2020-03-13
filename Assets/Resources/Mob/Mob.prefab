@@ -49,11 +49,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sexe: 1
   alimentation: 0
-  force: 0.5
+  force: 0.2
   vitesse: 0.5
-  satiete: 0
-  enfanceTemps: 1
+  satiete: 0.5
+  maturationTemps: 1
   cycleReproduction: 0.5
+  poids: 0.2
+  torso: {fileID: 0}
 --- !u!33 &6327808731408448635
 MeshFilter:
   m_ObjectHideFlags: 0

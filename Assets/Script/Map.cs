@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Map : MonoBehaviour
 {
@@ -11,8 +13,17 @@ public class Map : MonoBehaviour
     public List<Decoration> decorationType;
     public int nbBaseCube = 10;
     public int WIDTH = 50;
-    [HideInInspector]
-    public Cube[,] cubes;
+    public Cube[] cubes;
+
+    public Cube GetCube(int x, int y)
+    {
+        return cubes[x + y * WIDTH];
+    }
+    public void SetCube(int x, int y, Cube cube)
+    {
+        cubes[x + y * WIDTH] = cube;
+    }
+    
     [HideInInspector]
     public GameManager manager;
     void Awake()
@@ -21,6 +32,11 @@ public class Map : MonoBehaviour
         
 
         //GenerateMap();
+    }
+
+    private void Start()
+    {
+        Debug.Log(cubes);
     }
 
     // Update is called once per frame
@@ -38,14 +54,15 @@ public class Map : MonoBehaviour
         GameObject floor = Instantiate(baseFloor, new Vector3(WIDTH / 2.0f - 0.5f, -1, WIDTH / 2.0f - 0.5f), Quaternion.identity, transform);
         watter.transform.localScale = new Vector3(WIDTH-0.1f, 0.8f, WIDTH-0.1f);
         floor.transform.localScale = new Vector3(WIDTH, 1f, WIDTH);
-        cubes = new Cube[WIDTH,WIDTH];
+        Camera.main.transform.position = new Vector3(WIDTH/2,Camera.main.transform.position.y,WIDTH/2);
+        cubes = new Cube[WIDTH*WIDTH];
         for (int x = 0; x < WIDTH; ++x)
         {
             for (int z = 0; z < WIDTH; ++z)
             {
                 GameObject goCube = Instantiate(defaultCube.gameObject, new Vector3(x, 0, z), Quaternion.identity, transform);
                 Cube cube = goCube.GetComponent<Cube>();
-                cubes[x, z] = cube;
+                SetCube(x, z,cube);
                 cube.SetPosition(x,z);
             }
         }
@@ -56,7 +73,7 @@ public class Map : MonoBehaviour
         float totalWeight = TypeWeight();
         for (int i = 0; i < nbBaseCube; ++i)
         {
-            Cube cube = cubes[(int) (Random.value * WIDTH), (int) (Random.value * WIDTH)];
+            Cube cube = GetCube(Random.Range(0,WIDTH), Random.Range(0,WIDTH));
             float rand = Random.value;
             int index = -1;
             while (rand >= 0 && index < cubeType.Count)
@@ -79,10 +96,10 @@ public class Map : MonoBehaviour
                 treat.AddDecoration();
                 int x = (int) treat.position.x;
                 int y = (int) treat.position.y;
-                if (x > 0 && cubes[x - 1, y].type == Cube.Type.none) next.Add(ChangeCube(cubes[x - 1, y], treat.type)); 
-                if (x < WIDTH-1 && cubes[x + 1, y].type == Cube.Type.none) next.Add(ChangeCube(cubes[x + 1, y], treat.type)); 
-                if (y > 0 && cubes[x, y - 1].type == Cube.Type.none) next.Add(ChangeCube(cubes[x, y - 1], treat.type)); 
-                if (y < WIDTH-1 && cubes[x, y + 1].type == Cube.Type.none) next.Add(ChangeCube(cubes[x, y + 1], treat.type)); 
+                if (x > 0 && GetCube(x - 1, y).type == Cube.Type.none) next.Add(ChangeCube(GetCube(x - 1, y), treat.type)); 
+                if (x < WIDTH-1 && GetCube(x + 1, y).type == Cube.Type.none) next.Add(ChangeCube(GetCube(x + 1, y), treat.type)); 
+                if (y > 0 && GetCube(x, y - 1).type == Cube.Type.none) next.Add(ChangeCube(GetCube(x, y - 1), treat.type)); 
+                if (y < WIDTH-1 && GetCube(x, y + 1).type == Cube.Type.none) next.Add(ChangeCube(GetCube(x, y + 1), treat.type)); 
             }
             toTreat = next;
             next = new List<Cube>();
@@ -93,12 +110,12 @@ public class Map : MonoBehaviour
     {
         Vector2 position = cube.position;
         DestroyImmediate(cube.gameObject);
-        cubes[(int)position.x, (int)position.y] = null;
+        SetCube((int)position.x, (int)position.y,null);
         Cube typeCube = defaultCube;
         int i = 0;
         while (i < cubeType.Count && cubeType[i].type != type) ++i;
         Cube cubeSpawn = Instantiate(cubeType[i], new Vector3(position.x,0, position.y), Quaternion.identity, transform);
-        cubes[(int)position.x, (int)position.y] = cubeSpawn;
+        SetCube((int)position.x, (int)position.y, cubeSpawn);
         cubeSpawn.SetPosition((int)position.x, (int)position.y);
 
         return cubeSpawn;
@@ -109,5 +126,12 @@ public class Map : MonoBehaviour
         float weight = 0;
         for (int i = 0; i < cubeType.Count; ++i) weight += cubeType[i].weight;
         return weight;
+    }
+
+    public Vector3 MobNextPos()
+    {
+        Vector3 pos = Vector3.zero;
+        
+        return pos+new Vector3(0,2,0);
     }
 }

@@ -5,7 +5,6 @@ using UnityEngine;
 public class Decoration : MonoBehaviour
 {
     public enum Type{grass,rock}
-
     public List<Cube.Type> acceptFloor;
 
     public Type type;
