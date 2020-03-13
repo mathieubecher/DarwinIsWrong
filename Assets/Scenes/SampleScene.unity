@@ -183,6 +183,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultMob: {fileID: 6327808731408448633, guid: c0aa40d04c656c14b8162b664747787b,
     type: 3}
+  alimentation: 0
+  force: 0.5
+  vitesse: 0.5
+  cycleReproduction: 0.5
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
