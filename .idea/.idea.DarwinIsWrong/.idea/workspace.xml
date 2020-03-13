@@ -18,6 +18,7 @@
     <setting file="file://$PROJECT_DIR$/Assets/Script/CubeType/Grass.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Script/Cube.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Script/GameManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Script/Map.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -28,6 +29,7 @@
         <option value="$PROJECT_DIR$/Assets/Script/CubeType/Watter.cs" />
         <option value="$PROJECT_DIR$/Assets/Script/Cube.cs" />
         <option value="$PROJECT_DIR$/Assets/Script/GameManager.cs" />
+        <option value="$PROJECT_DIR$/Assets/Script/Map.cs" />
       </list>
     </option>
   </component>
@@ -77,7 +79,7 @@
       <option name="presentableId" value="Default" />
       <updated>1584025934562</updated>
       <workItem from="1584025938729" duration="4227000" />
-      <workItem from="1584089744197" duration="2058000" />
+      <workItem from="1584089744197" duration="2913000" />
     </task>
     <servers />
   </component>
