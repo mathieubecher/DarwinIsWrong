@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
     <e p="C:\Users\mbelk\.Rider2019.2\system\extResources" t="IncludeRecursive" />
@@ -8,7 +8,13 @@
       <e p="Assets" t="Include">
         <e p="Script" t="Include">
           <e p="Cube.cs" t="Include" />
+          <e p="CubeType" t="Include">
+            <e p="Dirt.cs" t="Include" />
+            <e p="Grass.cs" t="Include" />
+            <e p="Watter.cs" t="Include" />
+          </e>
           <e p="GameManager.cs" t="Include" />
+          <e p="Map.cs" t="Include" />
           <e p="Mob.cs" t="Include" />
         </e>
       </e>
