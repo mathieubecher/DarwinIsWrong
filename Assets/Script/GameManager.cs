@@ -12,6 +12,6 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         main = Camera.main;
-        main.transform.position = new Vector3(map.WIDTH/2,0,map.WIDTH/2);
+        main.transform.position = new Vector3(map.WIDTH/2,main.transform.position.y,map.WIDTH/2);
     }
 }
