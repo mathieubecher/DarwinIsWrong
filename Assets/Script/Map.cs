@@ -20,7 +20,7 @@ public class Map : MonoBehaviour
         manager = FindObjectOfType<GameManager>();
         
 
-        GenerateMap();
+        //GenerateMap();
     }
 
     // Update is called once per frame

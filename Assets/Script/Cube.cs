@@ -15,7 +15,7 @@ public class Cube : MonoBehaviour
     
     void Start()
     {
-        AddDecoration();
+        manager = FindObjectOfType<GameManager>();
     }
 
     public void AddDecoration()
