@@ -10,7 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbf477652056c7949a794b9bcd80616f, type: 3}
-  m_Name: Torso_4
+  m_Name: Torso_1
   m_EditorClassIdentifier: 
-  poids: 0.509
-  cycleReproduction: 0.368
+  poids: 0.096
+  cycleReproduction: 0.178
+  nbMember: 2
+  head: {fileID: 0}
+  members: []

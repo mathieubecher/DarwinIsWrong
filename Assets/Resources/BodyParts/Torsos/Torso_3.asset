@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poids: 0.582
   cycleReproduction: 0.444
+  nbMember: 2
+  head: {fileID: 0}
+  members: []

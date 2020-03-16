@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Mob : MonoBehaviour
 {
@@ -32,7 +35,15 @@ public class Mob : MonoBehaviour
     [Range(0, 1)]
     public float poids;
 
-    public Torso torso;
+    [HideInInspector] public Torso torso;
+
+    private void OnDestroy()
+    {
+        DestroyImmediate(torso.head);
+        torso.members.ForEach(DestroyImmediate);
+        DestroyImmediate(torso);
+        DestroyImmediate(gameObject);
+    }
 
     public void ComputeStats()
     {
