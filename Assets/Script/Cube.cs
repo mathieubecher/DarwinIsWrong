@@ -60,4 +60,34 @@ public class Cube : MonoBehaviour
         for (int i = 0; i < decorations.Count; ++i) weight += decorations[i].weight;
         return weight;
     }
+
+    public void SpawnGrassNeighbour()
+    {
+        List<Cube> neighbours = new List<Cube>();
+        if (position.x > 0 && manager.map.GetCube((int)position.x - 1, (int)position.y).type == Type.grass 
+                           && manager.map.GetCube((int)position.x - 1, (int)position.y).onSurface == null) 
+            neighbours.Add(manager.map.GetCube((int)position.x - 1, (int)position.y));
+        
+        if (position.x < manager.map.WIDTH-1 && manager.map.GetCube((int)position.x + 1, (int)position.y).type == Type.grass 
+                                             && manager.map.GetCube((int)position.x + 1, (int)position.y).onSurface == null) 
+            neighbours.Add(manager.map.GetCube((int)position.x + 1, (int)position.y));
+        
+        if (position.y > 0 && manager.map.GetCube((int)position.x , (int)position.y - 1).type == Type.grass 
+                           && manager.map.GetCube((int)position.x , (int)position.y - 1).onSurface == null)
+            neighbours.Add(manager.map.GetCube((int)position.x , (int)position.y - 1));
+        
+        if (position.y < manager.map.WIDTH-1 && manager.map.GetCube((int)position.x , (int)position.y + 1).type == Type.grass 
+                                             && manager.map.GetCube((int)position.x , (int)position.y + 1).onSurface == null) 
+            neighbours.Add(manager.map.GetCube((int)position.x , (int)position.y + 1));
+        
+        if (neighbours.Count == 0) return;
+        int index = Random.Range(0, neighbours.Count);
+        neighbours[index].SpawnGrass();
+    }
+
+    public void SpawnGrass()
+    {
+        Debug.Log("find grass in "+ position);
+        Instantiate(manager.map.decorationType.Find(x => x.type == Decoration.Type.grass), new Vector3(position.x,1,position.y),Quaternion.identity,transform);
+    }
 }
