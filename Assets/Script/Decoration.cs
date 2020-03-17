@@ -9,4 +9,9 @@ public class Decoration : MonoBehaviour
 
     public Type type;
     public float weight;
+
+    public bool Block()
+    {
+        return type == Type.rock;
+    }
 }

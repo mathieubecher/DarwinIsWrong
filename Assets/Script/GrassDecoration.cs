@@ -19,7 +19,6 @@ public class GrassDecoration : Decoration
         timer -= Time.deltaTime;
         if (timer < 0)
         {
-            Debug.Log("pop");
             transform.parent.GetComponent<Cube>().SpawnGrassNeighbour();
             timer = Random.value * (maxTimerReproduce-minTimerReproduce) + minTimerReproduce;
         }

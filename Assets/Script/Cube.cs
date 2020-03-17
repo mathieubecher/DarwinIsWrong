@@ -1,13 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Cube : MonoBehaviour
 {
     public enum Type  { none = 0,dirt, grass, watter }
 
     public float weight = 0;
-    public Vector2 position;
+    [SerializeField]
+    public Vector2i position;
     public Type type;
     public GameManager manager;
     public Decoration onSurface;
@@ -52,7 +55,7 @@ public class Cube : MonoBehaviour
 
     public void SetPosition(int x, int y)
     {
-        position = new Vector2(x,y);
+        position = new Vector2i(x,y);
     }
     float TypeWeight(List<Decoration> decorations)
     {
@@ -87,7 +90,40 @@ public class Cube : MonoBehaviour
 
     public void SpawnGrass()
     {
-        Debug.Log("find grass in "+ position);
         Instantiate(manager.map.decorationType.Find(x => x.type == Decoration.Type.grass), new Vector3(position.x,1,position.y),Quaternion.identity,transform);
+    }
+
+    public bool Walkable()
+    {
+        return type != Type.watter;
+    }
+}
+[Serializable]
+public struct Vector2i
+{
+    [SerializeField]
+    public int x;
+    [SerializeField]
+    public int y;
+
+    public Vector2i(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    public static bool operator ==(Vector2i a, Vector2i b)
+    {
+        return a.x == b.x && a.y == b.y;
+    }
+
+    public static bool operator !=(Vector2i a, Vector2i b)
+    {
+        return !(a == b);
+    }
+
+    public float Distance(Vector2i b)
+    {
+        return Mathf.Abs(b.x - x) + Mathf.Abs(b.y - y);
     }
 }

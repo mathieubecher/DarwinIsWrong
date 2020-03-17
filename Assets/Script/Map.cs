@@ -47,6 +47,7 @@ public class Map : MonoBehaviour
 
     public void GenerateMap()
     {
+        manager = FindObjectOfType<GameManager>();
         // Reinitialisation de la map
         while(transform.childCount > 0)
                 DestroyImmediate(transform.GetChild(0).gameObject);
@@ -104,11 +105,28 @@ public class Map : MonoBehaviour
             toTreat = next;
             next = new List<Cube>();
         }
+        for (int i = 0; i < manager.mobsType.Count; ++i)
+        {
+            for (int n = 0; n < 5; ++n)
+            {
+                do
+                {
+                    Cube c = GetCube(Random.Range(0, WIDTH),Random.Range(0, WIDTH));
+                    if (c.type != Cube.Type.watter && c.onSurface == null)
+                    {
+                        Mob m = Instantiate(manager.mobsType[i], new Vector3(c.position.x,1,c.position.y), Quaternion.identity, transform);
+                        m.pos = c;
+                        manager.mobs.Add(m);
+                        break;
+                    }
+                } while (true);
+            }
+        }
     }
 
     Cube ChangeCube(Cube cube, Cube.Type type)
     {
-        Vector2 position = cube.position;
+        Vector2i position = cube.position;
         DestroyImmediate(cube.gameObject);
         SetCube((int)position.x, (int)position.y,null);
         Cube typeCube = defaultCube;

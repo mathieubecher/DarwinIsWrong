@@ -968,7 +968,8 @@ MonoBehaviour:
   acceptFloor: 02000000
   type: 0
   weight: 0.9
-  timerReproduce: 5
+  minTimerReproduce: 50
+  maxTimerReproduce: 100
 --- !u!1 &8974665036486117944
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,15 +15,6 @@ public class GameManager : MonoBehaviour
     {
         main = Camera.main;
         
-        foreach (Mob mob in mobsType)
-        {
-            int i = Random.Range(2, 5); 
-            while (i > 0)
-            {
-                mobs.Add(Instantiate(mob,map.MobNextPos(), Quaternion.identity,transform));
-                --i;
-            }
-        }
     }
 
     private void Start()
