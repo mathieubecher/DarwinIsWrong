@@ -37,6 +37,12 @@ public class Mob : MonoBehaviour
 
     [HideInInspector] public Torso torso;
 
+    public Cube pos;
+    public Cube target;
+    public bool isTarget;
+    private CubeStar direction;
+    private GameManager manager;
+    
     private void OnDestroy()
     {
         /*
@@ -63,26 +69,23 @@ public class Mob : MonoBehaviour
     private void Awake()
     {
         manager = FindObjectOfType<GameManager>();
+        if (target != null) isTarget = true;
     }
 
     private void Update()
     {
-        if (target != null && direction == null)
+        if (isTarget)
         {
             direction = Goto(target);
             direction.Draw();
+            isTarget = false;
         }
     }
 
-    public Cube pos;
-    public Cube target;
-    
-    private CubeStar direction;
-    private GameManager manager;
-    private CubeStar Goto(Cube target)
+    private CubeStar Goto(Cube targetGo)
     {
         AStar star = new AStar(manager.map);
-        return star.FindWay(pos, target);
+        return star.FindWay(pos, targetGo);
     }
 
     private CubeStar Goto(int x, int y)
@@ -179,7 +182,7 @@ public class AStar
 
     private bool Treatable(int x, int y)
     {
-        return x >= 0 && x < _map.WIDTH && y >= 0 && y < _map.WIDTH  && _map.GetCube(x,y).Walkable() && (_map.GetCube(x,y).onSurface == null || !_map.GetCube(x,y).onSurface.Block())
+        return x >= 0 && x < _map.WIDTH && y >= 0 && y < _map.WIDTH  && _map.GetCube(x,y).Walkable() && (_map.GetCube(x,y).isSurface || !_map.GetCube(x,y).OnSurface.Block())
                && !treats.Exists(treat => treat.c.position.x == x && treat.c.position.y == y)
                && !toTreats.Exists(treat => treat.c.position.x == x && treat.c.position.y == y);
     }

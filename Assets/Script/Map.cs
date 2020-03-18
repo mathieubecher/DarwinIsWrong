@@ -112,7 +112,7 @@ public class Map : MonoBehaviour
                 do
                 {
                     Cube c = GetCube(Random.Range(0, WIDTH),Random.Range(0, WIDTH));
-                    if (c.type != Cube.Type.watter && c.onSurface == null)
+                    if (c.type != Cube.Type.watter && c.OnSurface == null)
                     {
                         Mob m = Instantiate(manager.mobsType[i], new Vector3(c.position.x,1,c.position.y), Quaternion.identity, transform);
                         m.pos = c;

@@ -13,7 +13,19 @@ public class Cube : MonoBehaviour
     public Vector2i position;
     public Type type;
     public GameManager manager;
-    public Decoration onSurface;
+    private Decoration onSurface;
+
+    public Decoration OnSurface
+    {
+        get => onSurface;
+        set
+        {
+            onSurface = value;
+            isSurface = true;
+        }
+    }
+
+    public bool isSurface = false;
     // Start is called before the first frame update
     
     void Start()
@@ -44,7 +56,7 @@ public class Cube : MonoBehaviour
             Decoration decorType = manager.map.decorationType[index];
             int i = 0;
             while (i < decorType.acceptFloor.Count && type != decorType.acceptFloor[i]) ++i;
-            if(i<decorType.acceptFloor.Count) onSurface = Instantiate(decorType, new Vector3(position.x,1,position.y),Quaternion.identity,transform);
+            if(i<decorType.acceptFloor.Count) OnSurface = Instantiate(decorType, new Vector3(position.x,1,position.y),Quaternion.identity,transform);
         }
     }
     // Update is called once per frame
