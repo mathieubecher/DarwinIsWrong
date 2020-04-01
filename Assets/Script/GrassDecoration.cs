@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class GrassDecoration : Decoration
 {
-    public float minTimerReproduce = 5;
-    public float maxTimerReproduce = 10;
+    private float minTimerReproduce = 50;
+    private float maxTimerReproduce = 100;
     private float timer;
     // Start is called before the first frame update
     void Start()

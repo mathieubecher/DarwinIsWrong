@@ -59,6 +59,7 @@ public class Cube : MonoBehaviour
             }
             
             Decoration decorType = manager.map.decorationType[index];
+            OnSurface = decorType;
             int i = 0;
             while (i < decorType.acceptFloor.Count && type != decorType.acceptFloor[i]) ++i;
             if(i<decorType.acceptFloor.Count) OnSurface = Instantiate(decorType, new Vector3(position.x,1,position.y),Quaternion.identity,transform);
@@ -112,7 +113,7 @@ public class Cube : MonoBehaviour
 
     public bool Walkable()
     {
-        return type != Type.watter;
+        return type != Type.watter && !isSurface;
     }
 }
 [Serializable]
