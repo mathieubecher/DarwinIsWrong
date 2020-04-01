@@ -36,7 +36,6 @@ public class Map : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log(cubes);
     }
 
     // Update is called once per frame

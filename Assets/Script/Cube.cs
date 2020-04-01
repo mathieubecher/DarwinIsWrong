@@ -14,7 +14,7 @@ public class Cube : MonoBehaviour
     public Type type;
     public GameManager manager;
     private Decoration onSurface;
-
+    public Material m;
     public Decoration OnSurface
     {
         get => onSurface;
@@ -27,7 +27,12 @@ public class Cube : MonoBehaviour
 
     public bool isSurface = false;
     // Start is called before the first frame update
-    
+
+    private void Awake()
+    {
+        m = GetComponent<Renderer>().material;
+    }
+
     void Start()
     {
         manager = FindObjectOfType<GameManager>();
@@ -136,6 +141,6 @@ public struct Vector2i
 
     public float Distance(Vector2i b)
     {
-        return Mathf.Abs(b.x - x) + Mathf.Abs(b.y - y);
+        return Mathf.Sqrt(Mathf.Pow(Mathf.Abs(b.x - x),2) + Mathf.Pow(Mathf.Abs(b.y - y),2));
     }
 }

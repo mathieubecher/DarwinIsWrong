@@ -34,12 +34,18 @@ public class Mob : MonoBehaviour
     public float cycleReproduction = 0.5f;
     [Range(0, 1)]
     public float poids;
+    
+    public Cube next;
+    private float timeMove = 0;
+    private float moveSpeed = 0.2f;
 
     [HideInInspector] public Torso torso;
 
     public Cube pos;
     public Cube target;
     public bool isTarget;
+    public bool isGoTo;
+    
     private CubeStar direction;
     private GameManager manager;
     
@@ -72,13 +78,46 @@ public class Mob : MonoBehaviour
         if (target != null) isTarget = true;
     }
 
+
     private void Update()
     {
-        if (isTarget)
+        if (isTarget && !isGoTo)
         {
             direction = Goto(target);
-            direction.Draw();
+            //direction.Draw();
             isTarget = false;
+            isGoTo = true;
+            
+            timeMove = moveSpeed;
+            --direction.depth;
+            next = direction.GetLast().c;
+        }
+        else if (isGoTo)
+        {
+            if (timeMove > 0)
+            {
+                transform.position = Vector3.Lerp(pos.transform.position,next.transform.position, (moveSpeed-timeMove)/moveSpeed) + new Vector3(0,1,0);
+                timeMove -= Time.deltaTime;
+            }
+            else
+            {
+                pos = next;
+                timeMove = moveSpeed;
+                --direction.depth;  
+                CubeStar nextStar = direction.GetLast();
+                next = nextStar.c;
+            }
+            
+            if (pos == target) isGoTo = false;
+        }
+        else
+        {
+            isTarget = true;
+            target = manager.map.GetCube(Random.Range(0,manager.map.WIDTH),Random.Range(0,manager.map.WIDTH));
+            while (!target.Walkable())
+            {
+                target = manager.map.GetCube(Random.Range(0,manager.map.WIDTH),Random.Range(0,manager.map.WIDTH)); 
+            }
         }
     }
 
@@ -101,11 +140,13 @@ public class CubeStar : IComparable<CubeStar>
     public Cube c;
     public CubeStar last;
     public float dist;
-
+    public int depth = 0;
     public CubeStar(Cube c ,CubeStar last, float dist = 0)
     {
         this.c = c;
         this.last = last;
+        this.depth = last.depth + 1;
+        this.dist = dist;
     }
 
     public CubeStar(Cube c)
@@ -135,6 +176,16 @@ public class CubeStar : IComparable<CubeStar>
         if (last == null) return print;
         return last.Print() + " -> " + print;
     }
+
+    public CubeStar GetLast(int _depth)
+    {
+        if (last == null || _depth <= 0) return this;
+        return last.GetLast(_depth-1);
+    }
+    public CubeStar GetLast()
+    {
+        return GetLast(depth);
+    }
 }
 
 public class AStar
@@ -150,15 +201,22 @@ public class AStar
     private List<CubeStar> treats;
     public CubeStar FindWay(Cube origin, Cube target)
     {
+        int nbTreat = 0;
         toTreats = new List<CubeStar>();
         treats = new List<CubeStar>();
         toTreats.Add(new CubeStar(origin));
+        
         do
         {
             CubeStar actual = toTreats[0];
+            //actual.c.m.color = new Color(nbTreat/((float)(_map.WIDTH*_map.WIDTH)),0,0);
+            ++nbTreat;
             toTreats.Remove(actual);
             treats.Add(actual);
-            if (actual.c.position == target.position) return actual;
+            if (actual.c.position == target.position)
+            {
+                return actual;
+            }
             int x = (int)actual.c.position.x, y = (int)actual.c.position.y;
             
             if(Treatable(x - 1, y)) 
@@ -173,17 +231,21 @@ public class AStar
             if(Treatable(x,y + 1)) 
                 toTreats.Add(new CubeStar(_map.GetCube(x,y+1),actual, _map.GetCube(x,y+1).position.Distance(target.position)));
 
-            treats.Sort();
+            toTreats.Sort();
 
         } while (toTreats.Count > 0);
 
+        
         return null;
     }
 
     private bool Treatable(int x, int y)
     {
-        return x >= 0 && x < _map.WIDTH && y >= 0 && y < _map.WIDTH  && _map.GetCube(x,y).Walkable() && (_map.GetCube(x,y).isSurface || !_map.GetCube(x,y).OnSurface.Block())
-               && !treats.Exists(treat => treat.c.position.x == x && treat.c.position.y == y)
+        if (! (x >= 0 && x < _map.WIDTH && y >= 0 && y < _map.WIDTH)) return false;
+        Cube c = _map.GetCube(x, y);
+        bool reachable = c.Walkable() && (!c.isSurface || !c.OnSurface.Block());
+        
+        return reachable && !treats.Exists(treat => treat.c.position.x == x && treat.c.position.y == y)
                && !toTreats.Exists(treat => treat.c.position.x == x && treat.c.position.y == y);
     }
     
