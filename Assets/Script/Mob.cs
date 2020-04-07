@@ -34,6 +34,7 @@ public class Mob : MonoBehaviour
     public float lastEat = 0;
     private List<Cube> grass;
     private List<Mob> mobs;
+    private float stun = 0;
     
     // REPRODUCTION
     [Range(0,1)]
@@ -48,7 +49,7 @@ public class Mob : MonoBehaviour
     public Cube next;
     private float timeMove = 0;
     private float moveSpeed = 0.2f;
-
+    
     [HideInInspector] public Torso torso;
 
     public Cube pos;
@@ -95,58 +96,70 @@ public class Mob : MonoBehaviour
 
     private void Update()
     {
+        
         grass.RemoveAll(i => !i.isSurface);
         mobs.RemoveAll(i => i == null);
         
         lastEat += Time.deltaTime/60 * ((alimentation == Alimentation.carnivore)?0.5f:1);
         timerCycle -= Time.deltaTime / 60 * ((alimentation == Alimentation.carnivore)?0.5f:1);
-        
-        if (lastEat > satiete) Dead();
-
-        if (!isMobile && alimentation == Alimentation.herbivore && pos.isSurface && pos.OnSurface.type == Decoration.Type.grass)
+        if (stun > 0)
         {
-            lastEat = 0;
+            stun -= Time.deltaTime;
+        }
+        else
+        {
+            if (lastEat > satiete) Dead();
+
+            if (!isMobile && alimentation == Alimentation.herbivore && pos.isSurface && pos.OnSurface.type == Decoration.Type.grass)
+            {
+                lastEat = 0;
             
-            GameObject eatgrass = pos.OnSurface.gameObject;
-            pos.OnSurface = null;
-            pos.activeM = true;
-            Destroy(eatgrass);
-        }
+                GameObject eatgrass = pos.OnSurface.gameObject;
+                pos.OnSurface = null;
+                pos.activeM = true;
+                Destroy(eatgrass);
+            }
 
-        else if (alimentation == Alimentation.carnivore && lastEat > satiete / 3)
-        {
-            foreach (Mob mob in mobs)
+            else if (alimentation == Alimentation.carnivore && lastEat > satiete / 3)
             {
-                if (alimentation == Alimentation.carnivore && mob.alimentation == Alimentation.herbivore && mob.pos == pos)
+                foreach (Mob mob in mobs)
                 {
-                    mob.Dead();
-                    lastEat = 0;
+                    if (alimentation == Alimentation.carnivore && mob.alimentation == Alimentation.herbivore && mob.pos == pos)
+                    {
+                        if (Random.value + force > Random.value + mob.force)
+                        {
+                            mob.Dead();
+                            lastEat = 0;
+                        }
+                        else stun = 2;
+                    }
                 }
             }
-        }
 
-        if (timerCycle < 0)
-        {
-            foreach (Mob mob in mobs)
+            if (timerCycle < 0)
             {
-                if (mob.id == id && mob.timerCycle < 0 && mob.pos == pos)
+                foreach (Mob mob in mobs)
                 {
-                    timerCycle = cycleReproduction;
-                    mob.timerCycle = cycleReproduction;
+                    if (mob.id == id && mob.timerCycle < 0 && mob.pos == pos)
+                    {
+                        timerCycle = cycleReproduction;
+                        mob.timerCycle = cycleReproduction;
                     
-                    Mob m = Instantiate(manager.mobsType.Find(x => x.id == id), new Vector3(pos.position.x,1,pos.position.y), Quaternion.identity, manager.map.transform);
-                    m.pos = pos;
-                    manager.mobs.Add(m);
+                        Mob m = Instantiate(manager.mobsType.Find(x => x.id == id), new Vector3(pos.position.x,1,pos.position.y), Quaternion.identity, manager.map.transform);
+                        m.pos = pos;
+                        manager.mobs.Add(m);
+                    }
                 }
             }
+        
+            bool findNext = false;
+            if (!findNext && timerCycle < 0 && lastEat < satiete * 2 / 3 && !isMobile && mobs.Count > 0) findNext = FindReproduce();
+            if (!findNext && lastEat > satiete / 3 && !isMobile) findNext = FindFood();
+            if(!findNext) RandomDirection();
+
+            Move();
         }
         
-        bool findNext = false;
-        if (!findNext && timerCycle < 0 && lastEat < satiete * 2 / 3 && !isMobile && mobs.Count > 0) findNext = FindReproduce();
-        if (!findNext && lastEat > satiete / 3 && !isMobile) findNext = FindFood();
-        if(!findNext) RandomDirection();
-
-        Move();
     }
 
     private void RandomDirection()
