@@ -106,7 +106,7 @@ public class Map : MonoBehaviour
         }
         for (int i = 0; i < manager.mobsType.Count; ++i)
         {
-            for (int n = 0; n < 5; ++n)
+            for (int n = 0; n < ((manager.mobsType[i].alimentation == Mob.Alimentation.carnivore)?3:5) ; ++n)
             {
                 do
                 {

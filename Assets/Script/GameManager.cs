@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public List<Mob> mobs;
     public Camera main;
 
-    [Range(0, 5)] public float speed;
+    [Range(0, 10)] public float speed;
     // Start is called before the first frame update
     private void Awake()
     {

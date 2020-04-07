@@ -48,15 +48,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57b24a8213254f243934c3f91027a057, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 0
+  id: 1
   sexe: 1
-  alimentation: 0
-  force: 0.2
-  vitesse: 0.5
-  satiete: 0.5
+  alimentation: 1
+  force: 0.3
+  vitesse: 0.6
+  satiete: 0.6
   lastEat: 0
-  maturationTemps: 1
-  cycleReproduction: 0.5
+  maturationTemps: 0.4
+  cycleReproduction: 0.6
   timerCycle: 0
   poids: 0.2
   next: {fileID: 0}
@@ -65,7 +65,6 @@ MonoBehaviour:
   target: {fileID: 0}
   isTarget: 0
   isGoTo: 0
-  isFood: 0
   isMobile: 0
 --- !u!33 &6327808731408448635
 MeshFilter:

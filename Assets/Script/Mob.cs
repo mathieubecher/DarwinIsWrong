@@ -98,8 +98,8 @@ public class Mob : MonoBehaviour
         grass.RemoveAll(i => !i.isSurface);
         mobs.RemoveAll(i => i == null);
         
-        lastEat += Time.deltaTime/60;
-        timerCycle -= Time.deltaTime / 60;
+        lastEat += Time.deltaTime/60 * ((alimentation == Alimentation.carnivore)?0.5f:1);
+        timerCycle -= Time.deltaTime / 60 * ((alimentation == Alimentation.carnivore)?0.5f:1);
         
         if (lastEat > satiete) Dead();
 
@@ -111,6 +111,18 @@ public class Mob : MonoBehaviour
             pos.OnSurface = null;
             pos.activeM = true;
             Destroy(eatgrass);
+        }
+
+        else if (alimentation == Alimentation.carnivore && lastEat > satiete / 3)
+        {
+            foreach (Mob mob in mobs)
+            {
+                if (alimentation == Alimentation.carnivore && mob.alimentation == Alimentation.herbivore && mob.pos == pos)
+                {
+                    mob.Dead();
+                    lastEat = 0;
+                }
+            }
         }
 
         if (timerCycle < 0)
@@ -180,9 +192,9 @@ public class Mob : MonoBehaviour
     private bool FindFood()
     {
 
-        if (alimentation == Alimentation.herbivore && (!isGoTo || !direction.c.isSurface))
+        if (alimentation == Alimentation.herbivore)
         {
-            if(grass.Count == 0) RandomDirection();
+            if(grass.Count == 0 || (isGoTo && direction.c.isSurface)) return false;
             else
             {
                 target = grass[0];
@@ -190,7 +202,11 @@ public class Mob : MonoBehaviour
                 foreach (Cube grassCube in grass)
                 {
                     float grassDist = (grassCube.transform.position - pos.transform.position).magnitude;
-                    if (grassDist < dist) target = grassCube;
+                    if (grassDist < dist)
+                    {
+                        dist = grassDist;
+                        target = grassCube;
+                    }
                 }
                 isTarget = true;
                 isGoTo = false;
@@ -198,7 +214,31 @@ public class Mob : MonoBehaviour
                 return true;
             }
         }
-        
+        else
+        {
+            if (mobs.Count == 0) return false;
+            bool find = false;
+            float dist = 100;
+            foreach (Mob mob in mobs)
+            {
+                if (mob.alimentation == Alimentation.herbivore)
+                {
+                    float mobDist = (mob.transform.position - this.transform.position).magnitude;
+                    if (mobDist < dist)
+                    {
+                        dist = mobDist;
+                        target = mob.pos;
+                        find = true;
+                    }
+                }
+            }
+            if(find){
+                isTarget = true;
+                isGoTo = false;
+                isMobile = true;
+                return true;
+            }
+        }
 
         return false;
     }
@@ -272,34 +312,6 @@ public class Mob : MonoBehaviour
         if(other.gameObject.layer == 8) mobs.Remove(other.gameObject.GetComponent<Mob>());
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
