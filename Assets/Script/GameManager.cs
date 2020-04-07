@@ -6,10 +6,13 @@ using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
+    
     public Map map;
     public List<Mob> mobsType;
     [HideInInspector] public List<Mob> mobs;
     public Camera main;
+
+    [Range(0, 5)] public float speed;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -19,6 +22,10 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log(map.cubes);
+    }
+
+    private void Update()
+    {
+        Time.timeScale = speed;
     }
 }

@@ -13,15 +13,17 @@ public class Cube : MonoBehaviour
     public Vector2i position;
     public Type type;
     public GameManager manager;
-    private Decoration onSurface;
+    [SerializeField] private Decoration onSurface;
     public Material m;
+    public float timer = 0;
+    public bool activeM = false;
     public Decoration OnSurface
     {
         get => onSurface;
         set
         {
             onSurface = value;
-            isSurface = true;
+            isSurface = value != null;
         }
     }
 
@@ -31,6 +33,11 @@ public class Cube : MonoBehaviour
     private void Awake()
     {
         m = GetComponent<Renderer>().material;
+        if(isSurface && onSurface == null)
+        {
+            
+            Debug.Log("WTF");
+        }
     }
 
     void Start()
@@ -59,7 +66,6 @@ public class Cube : MonoBehaviour
             }
             
             Decoration decorType = manager.map.decorationType[index];
-            OnSurface = decorType;
             int i = 0;
             while (i < decorType.acceptFloor.Count && type != decorType.acceptFloor[i]) ++i;
             if(i<decorType.acceptFloor.Count) OnSurface = Instantiate(decorType, new Vector3(position.x,1,position.y),Quaternion.identity,transform);
@@ -68,7 +74,13 @@ public class Cube : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (activeM)
+        {
+            timer += Time.deltaTime/2;
+            m.color = Color.Lerp(Color.red, Color.green, timer);
+            if (timer > 1) activeM = false;
+        }
+        else timer = 0;
     }
 
     public void SetPosition(int x, int y)
@@ -108,12 +120,13 @@ public class Cube : MonoBehaviour
 
     public void SpawnGrass()
     {
-        Instantiate(manager.map.decorationType.Find(x => x.type == Decoration.Type.grass), new Vector3(position.x,1,position.y),Quaternion.identity,transform);
+        GrassDecoration grass = Instantiate(manager.map.decorationType.Find(x => x.type == Decoration.Type.grass), new Vector3(position.x,1,position.y),Quaternion.identity,transform) as GrassDecoration;
+        OnSurface = grass;
     }
 
     public bool Walkable()
     {
-        return type != Type.watter && !isSurface;
+        return type != Type.watter && (!isSurface || !onSurface.Block());
     }
 }
 [Serializable]
@@ -142,6 +155,6 @@ public struct Vector2i
 
     public float Distance(Vector2i b)
     {
-        return Mathf.Sqrt(Mathf.Pow(Mathf.Abs(b.x - x),2) + Mathf.Pow(Mathf.Abs(b.y - y),2));
+        return Mathf.Abs(b.x - x) + Mathf.Abs(b.y - y);
     }
 }

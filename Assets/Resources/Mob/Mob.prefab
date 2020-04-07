@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: 6327808731408448634}
   - component: {fileID: 6327808731408448637}
   - component: {fileID: 6327808731408448636}
-  m_Layer: 0
+  - component: {fileID: 7012317226845883364}
+  m_Layer: 8
   m_Name: Mob
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,15 +48,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57b24a8213254f243934c3f91027a057, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   sexe: 1
   alimentation: 0
   force: 0.2
   vitesse: 0.5
   satiete: 0.5
+  lastEat: 0
   maturationTemps: 1
   cycleReproduction: 0.5
+  timerCycle: 0
   poids: 0.2
+  next: {fileID: 0}
   torso: {fileID: 0}
+  pos: {fileID: 0}
+  target: {fileID: 0}
+  isTarget: 0
+  isGoTo: 0
+  isFood: 0
+  isMobile: 0
 --- !u!33 &6327808731408448635
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -132,3 +143,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!135 &7012317226845883364
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6327808731408448639}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 20
+  m_Center: {x: 0, y: 0, z: 0}
