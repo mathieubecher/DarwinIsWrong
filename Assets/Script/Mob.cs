@@ -63,12 +63,7 @@ public class Mob : MonoBehaviour
     
     private void OnDestroy()
     {
-        /*
-        DestroyImmediate(torso.head);
-        torso.members.ForEach(DestroyImmediate);
-        DestroyImmediate(torso);
-        DestroyImmediate(gameObject);
-        */
+        Destroy(GetComponent<Renderer>().material);
     }
 
     public void ComputeStats()

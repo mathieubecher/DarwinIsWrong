@@ -8,7 +8,11 @@ using Random = UnityEngine.Random;
 
 public class Genetic : MonoBehaviour
 {
+    private bool _verbose = false;
+    
     public Mob defaultMob;
+    public Material materialHerbivore;
+    public Material materialCarnivore;
     
     public Mob.Alimentation alimentation;
     [Range(0,1)]
@@ -37,9 +41,9 @@ public class Genetic : MonoBehaviour
     
     public void CreateMonster()
     {
-        Debug.Log("Creating Monster");
+        Log("Creating Monster");
         
-        Debug.Log("Initialization");
+        Log("Initialization");
         var parent = new GameObject("CreateMonsterTempStorage");
         const int maxPop = 10;
         var mobNs = new List<MobNote>();
@@ -59,7 +63,7 @@ public class Genetic : MonoBehaviour
         }
         mobNs.Sort();
 
-        Debug.Log("Running Genetic Algorithm");
+        Log("Running Genetic Algorithm");
         const int nbGen = 50;
         for (var i = 0; i < nbGen; ++i)
         {
@@ -93,21 +97,41 @@ public class Genetic : MonoBehaviour
             
             mobNs.Sort();
         }
+        DestroyImmediate(mobNs[0].mob.GetComponent<MeshRenderer>().material);
+        mobNs[0].mob.GetComponent<MeshRenderer>().material = mobNs[0].mob.alimentation == Mob.Alimentation.carnivore
+            ? materialCarnivore
+            : materialHerbivore;
         
-        Debug.Log("Creating Prefab of the best monster");
+        Log("Creating Prefab of the best monster");
         var localPath = "Assets/Resources/Mob";
         if (!AssetDatabase.IsValidFolder(localPath + "/Completed"))
             AssetDatabase.CreateFolder(localPath, "Completed");
         localPath += "/Completed/Mob_"
-                     + (mobNs[0].mob.alimentation == Mob.Alimentation.carnivore ? "C" : "V")
+                     + (mobNs[0].mob.alimentation == Mob.Alimentation.carnivore ? "C" : "H")
                      + ".prefab";
         localPath = AssetDatabase.GenerateUniqueAssetPath(localPath);
-        PrefabUtility.SaveAsPrefabAssetAndConnect(mobNs[0].mob.gameObject, localPath, InteractionMode.UserAction);
+        var newMob = PrefabUtility.SaveAsPrefabAssetAndConnect(mobNs[0].mob.gameObject, localPath, InteractionMode.UserAction);
+
+        var replaced = false;
+        for (var i = 0; i < GetComponent<GameManager>().mobsType.Count; i++)
+            if (GetComponent<GameManager>().mobsType[i].alimentation == alimentation)
+            {
+                GetComponent<GameManager>().mobsType[i] = newMob.GetComponent<Mob>();
+                replaced = true;
+            }
+        if (!replaced)
+            GetComponent<GameManager>().mobsType.Add(newMob.GetComponent<Mob>());
         
         // Cleaning
         foreach (var mobN in mobNs) DestroyImmediate(mobN.mob.gameObject);
         DestroyImmediate(parent);
-        Debug.Log("Monster created");
+        Log("Monster created");
+    }
+
+    private void Log(string message)
+    {
+        if (_verbose)
+            Debug.Log(message);
     }
     
     private float Evaluate(Mob mob)
